@@ -4,7 +4,7 @@ import streamlit as st
 from openai import OpenAI
 
 st.set_page_config(page_title='Riesgo actuarial', layout='centered')
-st.title('Predicción de riesgo actuarial-Angel Pineda-Computación en la nube')
+st.title('Predicción de riesgo actuarial-ANGEL PINEDA-PTI-0620')
 
 @st.cache_resource
 def cargar_modelo():
@@ -25,8 +25,6 @@ def cargar_base():
 
 modelo, metadata = cargar_modelo()
 df = cargar_base()
-
-print(metadata.keys())
 
 mapa = {int(k): v for k, v in metadata['mapa_riesgo'].items()}
 
