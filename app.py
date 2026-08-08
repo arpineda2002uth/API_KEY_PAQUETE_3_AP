@@ -3,32 +3,47 @@ import pandas as pd
 import streamlit as st
 from openai import OpenAI
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 st.set_page_config(page_title='Riesgo actuarial', layout='centered')
-st.title('Predicción de riesgo actuarial-ANGEL PINEDA-PTI-0620')
+st.title('Predicción de riesgo actuarial-STANLEY GOFF-PTI-0620')
 
 @st.cache_resource
 def cargar_modelo():
-    pkl = 'kmeans_riesgo_actuarial.pkl' if os.path.exists('kmeans_riesgo_actuarial.pkl') else 'kmeans_riesgo_actuarial(2).pkl'
-    meta = 'model_metadata.json' if os.path.exists('model_metadata.json') else 'model_metadata(2).json'
-    
-    modelo = joblib.load(pkl)
+    pkl_path = os.path.join(BASE_DIR, 'kmeans_riesgo_actuarial.pkl')
+    meta_path = os.path.join(BASE_DIR, 'model_metadata.json')
+    #'kmeans_riesgo_actuarial.pkl' if os.path.exists('kmeans_riesgo_actuarial.pkl') else 'kmeans_riesgo_actuarial(2).pkl'
+    #'model_metadata.json' if os.path.exists('model_metadata.json') else 'model_metadata(2).json'
+    if not os.path.exists(pkl_path) or not os.path.exists(meta_path):
+        st.error("No se encontraron los archivos del modelo/metadata en el directorio.")
+        st.stop()
+        
+    modelo = joblib.load(pkl_path)
 
-    with open(meta, encoding='utf-8') as f:
+    with open(meta_path, encoding='utf-8') as f:
         metadata = json.load(f)
 
     return modelo, metadata
 
 @st.cache_data
 def cargar_base():
-    csv = 'insurance.csv' if os.path.exists('insurance.csv') else 'insurance(2).csv'
-    return pd.read_csv(csv)
+    csv_path = os.path.join(BASE_DIR, 'insurance.csv')
+    
+    if not os.path.exists(csv_path):
+        st.error("No se encontró 'insurance.csv' en el directorio.")
+        st.stop()
+        
+    return pd.read_csv(csv_path)
 
 modelo, metadata = cargar_modelo()
 df = cargar_base()
 
-mapa = {int(k): v for k, v in metadata['mapa_riesgo'].items()}
 
-st.caption(metadata['nombre_modelo'])
+mapa_riesgo_dict = metadata.get('kmeans', {}).get('mapa_riesgo', {})
+mapa = {int(k): v for k, v in mapa_riesgo_dict.items()}
+
+st.caption(metadata.get('proyecto', 'Modelo K-Means'))
+
 
 with st.form('datos'):
 
@@ -96,7 +111,6 @@ if enviar:
         Resultado:
         cluster={cluster}
         riesgo={riesgo}
-        mapa={mapa}
         '''
 
         try:
