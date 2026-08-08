@@ -6,7 +6,7 @@ from openai import OpenAI
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 st.set_page_config(page_title='Riesgo actuarial', layout='centered')
-st.title('Predicción de riesgo actuarial-STANLEY GOFF-PTI-0620')
+st.title('Predicción de riesgo actuarial-ANGEL PINEDA-PTI-0620')
 
 @st.cache_resource
 def cargar_modelo():
