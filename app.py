@@ -28,7 +28,7 @@ df = cargar_base()
 
 print(metadata.keys())
 
-mapa = {int(k): v for k, v in metadata['mapa_riesgo'].items()}
+mapa = {int(k): v for k, v in metadata['mapa'].items()}
 
 st.caption(metadata['nombre_modelo'])
 
